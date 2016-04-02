@@ -1,0 +1,11 @@
+ok:
+- jeklik
+- hakkar
+
+not ok:
+- venoxis
+- marli
+- mandokir
+- thekal
+- arlokk
+- jindo
