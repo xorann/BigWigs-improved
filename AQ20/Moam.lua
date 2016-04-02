@@ -1,4 +1,4 @@
-﻿------------------------------
+------------------------------
 --      Are you local?      --
 ------------------------------
 
@@ -28,7 +28,7 @@ L:RegisterTranslations("enUS", function() return {
 	addswarn = "Adds spawned! Moam Paralyzed for 90 seconds!",
 	paralyzebar = "Paralyze",
 	returnincoming = "Moam unparalyzed in %s seconds!",
-	returntrigger = "^Energize fades from Moam%.$",
+	returntrigger = "Energize fades from Moam",
 	returnwarn = "Moam unparalyzed! 90 seconds until adds!",	
 } end )
 
@@ -121,6 +121,11 @@ BigWigsMoam.revision = tonumber(string.sub("$Revision: 13478 $", 12, -3))
 ------------------------------
 
 function BigWigsMoam:OnEnable()
+    started = nil
+    
+    self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
+    self:RegisterEvent("BigWigs_RecvSync")
+    
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath" )
@@ -128,36 +133,43 @@ end
 
 function BigWigsMoam:AddsStart()
 	if self.db.profile.adds then
-		self:ScheduleEvent("BigWigs_Message", 30, format(L["addsincoming"], 60), "Attention")
-		self:ScheduleEvent("BigWigs_Message", 60, format(L["addsincoming"], 30), "Attention")
-		self:ScheduleEvent("BigWigs_Message", 75, format(L["addsincoming"], 15), "Urgent")
-		self:ScheduleEvent("BigWigs_Message", 85, format(L["addsincoming"], 5), "Important")
-		self:TriggerEvent("BigWigs_StartBar", self, L["addsbar"], 90, "Interface\\Icons\\Spell_Shadow_CurseOfTounges") 
+		--self:ScheduleEvent("BigWigs_Message", 80, format(L["addsincoming"], 10), "Important")
+        self:TriggerEvent("BigWigs_StartBar", self, L["addsbar"], 90, "Interface\\Icons\\Ability_Devour")
+        
+        self:ScheduleEvent("countdown10", "BigWigs_Message", 80, "", "Urgent", true, "Ten")
+        self:ScheduleEvent("countdown3", "BigWigs_Message", 87, "", "Urgent", true, "Three")
+        self:ScheduleEvent("countdown2", "BigWigs_Message", 88, "", "Urgent", true, "Two")
+        self:ScheduleEvent("countdown1", "BigWigs_Message", 89, "", "Urgent", true, "One") 
 	end
 end
 
 function BigWigsMoam:CHAT_MSG_MONSTER_EMOTE( msg )
-	if msg == L["starttrigger"] then
-		if self.db.profile.adds then self:TriggerEvent("BigWigs_Message", L["startwarn"], "Important") end
-		self:AddsStart()
-	elseif msg == L["addstrigger"] then
-		if self.db.profile.adds then
-			self:TriggerEvent("BigWigs_Message", L["addswarn"], "Important")
-		end
+	if msg == L["addstrigger"] then
 		if self.db.profile.paralyze then
-			self:ScheduleEvent("BigWigs_Message", 30, format(L["returnincoming"], 60), "Attention")
-			self:ScheduleEvent("BigWigs_Message", 60, format(L["returnincoming"], 30), "Attention")
-			self:ScheduleEvent("BigWigs_Message", 75, format(L["returnincoming"], 15), "Urgent")
-			self:ScheduleEvent("BigWigs_Message", 85, format(L["returnincoming"], 5), "Important")
+			--self:ScheduleEvent("BigWigs_Message", 80, format(L["returnincoming"], 10), "Important")
 			self:TriggerEvent("BigWigs_StartBar", self, L["paralyzebar"], 90, "Interface\\Icons\\Spell_Shadow_CurseOfTounges")
+            
+            self:ScheduleEvent("countdown10", "BigWigs_Message", 80, "", "Urgent", true, "Ten")
+            self:ScheduleEvent("countdown3", "BigWigs_Message", 87, "", "Urgent", true, "Three")
+            self:ScheduleEvent("countdown2", "BigWigs_Message", 88, "", "Urgent", true, "Two")
+            self:ScheduleEvent("countdown1", "BigWigs_Message", 89, "", "Urgent", true, "One")
 		end
 	end
 end
 
 function BigWigsMoam:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS( msg )
 	if string.find( msg, L["returntrigger"]) then
-		if self.db.profile.paralyze then self:TriggerEvent("BigWigs_Message", L["returnwarn"], "Important") end
-		self:AddsStart()
+		if self.db.profile.paralyze then 
+            self:AddsStart()
+        end
 	end
 end
 
+function BigWigsFiremaw:BigWigs_RecvSync(sync, rest)
+	if sync == self:GetEngageSync() and rest and rest == boss and not started then
+		started = true
+		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
+		
+        self:AddsStart()
+    end
+end
