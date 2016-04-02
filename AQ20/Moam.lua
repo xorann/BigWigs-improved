@@ -165,7 +165,7 @@ function BigWigsMoam:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS( msg )
 	end
 end
 
-function BigWigsFiremaw:BigWigs_RecvSync(sync, rest)
+function BigWigsMoam:BigWigs_RecvSync(sync, rest)
 	if sync == self:GetEngageSync() and rest and rest == boss and not started then
 		started = true
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
