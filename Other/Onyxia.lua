@@ -1,4 +1,4 @@
-﻿------------------------------
+------------------------------
 --      Are you local?      --
 ------------------------------
 
@@ -15,18 +15,27 @@ L:RegisterTranslations("enUS", function() return {
 	deepbreath_cmd = "deepbreath",
 	deepbreath_name = "Deep Breath alert",
 	deepbreath_desc = "Warn when Onyxia begins to cast Deep Breath ",
-
+    deepbreath_trigger = "takes in a deep breath",
+    deepbreath_warn = "Deep Breath incoming!",
+            
 	phase2_cmd = "phase2",
 	phase2_name = "Phase 2 alert",
 	phase2_desc = "Warn for Phase 2",
+    phase2_trigger = "This meaningless exertion bores me.",
+    phase2_warn = "Onyxia phase 2 incoming!",
 
 	phase3_cmd = "phase3",
 	phase3_name = "Phase 3 alert",
 	phase3_desc = "Warn for Phase 3",
+    phase3_trigger = "It seems you'll need another lesson",
+    phase3_warn = "Onyxia phase 3 incoming!",
 
 	onyfear_cmd = "onyfear",
 	onyfear_name = "Fear",
 	onyfear_desc = "Warn for Bellowing Roar in phase 3",
+    onyfear_trigger = "Onyxia begins to cast Bellowing Roar.",
+    onyfear_warn = "Fear",
+    onyfear_bar = "Possible Fear",
 
 	trigger1 = "%s takes in a deep breath...",
 	trigger2 = "from above",
@@ -148,22 +157,30 @@ end
 ------------------------------
 
 function BigWigsOnyxia:CHAT_MSG_MONSTER_EMOTE(msg)
-	if (msg == L["trigger1"]) then
-		if self.db.profile.deepbreath then self:TriggerEvent("BigWigs_Message", L["warn1"], "Important") end
+	if (msg == L["deepbreath_trigger"]) then
+		if self.db.profile.deepbreath then 
+            self:TriggerEvent("BigWigs_Message", L["deepbreath_warn"], "Important", true, "RunAway") 
+        end
 	end
 end
 
 function BigWigsOnyxia:CHAT_MSG_MONSTER_YELL(msg)
-	if (string.find(msg, L["trigger2"])) then
-		if self.db.profile.phase2 then self:TriggerEvent("BigWigs_Message", L["warn2"], "Urgent") end
-	elseif (string.find(msg, L["trigger3"])) then
-		if self.db.profile.phase3 then self:TriggerEvent("BigWigs_Message", L["warn3"], "Urgent") end
-	end
+	if (string.find(msg, L["phase2_trigger"])) then
+        if self.db.profile.phase2 then 
+            self:TriggerEvent("BigWigs_Message", L["phase2_warn"], "Urgent", true, "Alarm")
+        end
+    elseif (string.find(msg, L["phase3_trigger"])) then
+        if self.db.profile.phase2 then 
+            self:TriggerEvent("BigWigs_Message", L["phase3_warn"], "Urgent", true, "Beware")
+            self:TriggerEvent("BigWigs_StartBar", self, L["onyfear_bar"], 10, "Interface\\Icons\\Spell_Shadow_PsychicScream")
+        end
+    end
 end
 
 
 function BigWigsOnyxia:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
-	if msg == L["trigger4"] and self.db.profile.onyfear then
-		self:TriggerEvent("BigWigs_Message", L["warn4"], "Important")
+	if msg == L["onyfear_trigger"] and self.db.profile.onyfear then
+		self:TriggerEvent("BigWigs_Message", L["onyfear_warn"], "Important", true, "Alarm")
+        self:TriggerEvent("BigWigs_StartBar", self, L["onyfear_bar"], 30, "Interface\\Icons\\Spell_Shadow_PsychicScream")
 	end
 end
