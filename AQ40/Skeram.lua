@@ -1,4 +1,4 @@
-﻿------------------------------
+------------------------------
 --      Are you local?      --
 ------------------------------
 
@@ -160,7 +160,10 @@ function BigWigsSkeram:CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE(arg1)
 		if player == L["mcyou"] and type == L["mcare"] then
 			player = UnitName("player")
 		end
-		if self.db.profile.mc then self:TriggerEvent("BigWigs_Message", player .. L["mcplayerwarn"], "Important") end
+		if self.db.profile.mc then 
+            self:TriggerEvent("BigWigs_Message", player .. L["mcplayerwarn"], "Important") 
+            self:TriggerEvent("BigWigs_StartBar", self, player .. L["mcplayerwarn"], 20, "Interface\\Icons\\Spell_Shadow_Charm", "Orange")
+        end
 	end
 end
 
