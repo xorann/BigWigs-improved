@@ -11,7 +11,7 @@ local L = AceLibrary("AceLocale-2.0"):new("BigWigs"..boss)
 
 L:RegisterTranslations("enUS", function() return {
 	bomb_trigger = "^([^%s]+) ([^%s]+) afflicted by Living Bomb",
-	inferno_trigger = "Baron Geddon is afflicted by Inferno.",
+	inferno_trigger = "Baron Geddon is afflicted by Inferno",
 	service_trigger = "%s performs one last service for Ragnaros.",
 
 	you = "You",
@@ -184,7 +184,7 @@ function BigWigsBaronGeddon:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
     self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
@@ -206,13 +206,17 @@ function BigWigsBaronGeddon:Event(msg)
 		end
 		self:TriggerEvent("BigWigs_SendSync", "GeddonBomb "..EPlayer)
 	end
+    
+    if string.find(msg, L["inferno_trigger"]) then 
+        self:TriggerEvent("BigWigs_SendSync", "GeddonInferno")
+    end
 end
 
-function BigWigsBaronGeddon:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
+--[[function BigWigsBaronGeddon:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
 	if msg == L["inferno_trigger"] then
 		self:TriggerEvent("BigWigs_SendSync", "GeddonInferno")
 	end
-end
+end]]
 
 function BigWigsBaronGeddon:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg == L["service_trigger"] and self.db.profile.service then
