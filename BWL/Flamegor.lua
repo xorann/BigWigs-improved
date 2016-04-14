@@ -30,7 +30,7 @@ L:RegisterTranslations("enUS", function() return {
 	shadowflame_cmd = "shadowflame",
 	shadowflame_name = "Shadow Flame alert",
 	shadowflame_desc = "Warn for Shadow Flame",
-    shadowflame_bar = "Shadow Flame",
+    shadowflame_bar = "Possible Shadow Flame",
 
 	frenzy_cmd = "frenzy",
 	frenzy_name = "Frenzy alert",
@@ -99,6 +99,7 @@ L:RegisterTranslations("deDE", function() return {
 
 	shadowflame_name = "Schattenflamme",
 	shadowflame_desc = "Warnung, wenn Flammenmaul Schattenflamme wirkt.",
+    shadowflame_bar = "M\195\182gliche Schattenflamme",
 
 	frenzy_name = "Raserei",
 	frenzy_desc = "Warnung, wenn Flammenmaul in Raserei ger\195\164t.",
@@ -167,7 +168,7 @@ function BigWigsFlamegor:BigWigs_RecvSync(sync, rest)
     
     if sync == "FlamegorWingBuffet_" and self.db.profile.wingbuffet then
 		self:TriggerEvent("BigWigs_Message", L["wingbuffet_message"], "Important")
-		self:TriggerEvent("BigWigs_StartBar", self, L["wingbuffet_bar"], 29, "Interface\\Icons\\Spell_Fire_SelfDestruct")
+		self:TriggerEvent("BigWigs_StartBar", self, L["wingbuffet_bar"], 30, "Interface\\Icons\\Spell_Fire_SelfDestruct")
 	elseif sync == "FlamegorShadowflame" and self.db.profile.shadowflame then
 		self:TriggerEvent("BigWigs_Message", L["shadowflame_warning"], "Important", true, "Alarm")
         self:TriggerEvent("BigWigs_StartBar", self, L["shadowflame_bar"], 16, "Interface\\Icons\\Spell_Fire_Fire")

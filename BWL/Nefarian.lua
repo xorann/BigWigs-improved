@@ -10,7 +10,6 @@ local warnpairs = nil
 ----------------------------
 --      Localization      --
 ----------------------------
---30.9 0.4(29.5) 29.8(29.4) 58.8(29.0) 27.4(28.6) 56.4(29) 25.7(29.3) 54.3(28.6) 23.2(28.9) 53.9(30.7) 24.3(30.4) 54.0(29.7) 25.7(28.3) 58.5(32.8) 28.9(29.6) 57.4(28.5) 30.2(32.8)
 
 L:RegisterTranslations("enUS", function() return {
 	landing_soon_trigger = "Well done, my minions",
@@ -71,6 +70,15 @@ L:RegisterTranslations("enUS", function() return {
 	otherwarn_cmd = "otherwarn",
 	otherwarn_name = "Other alerts",
 	otherwarn_desc = "Landing and Zerg warnings",
+            
+    mc_cmd = "mc",
+	mc_name = "Mind Control Alert",
+	mc_desc = "Warn for Mind Control",
+    mcwarn = "Casting Mind Control!",
+	mcplayer = "^([^%s]+) ([^%s]+) afflicted by Shadow Command.$",
+	mcplayerwarn = " is mindcontrolled!",
+	mcyou = "You",
+	mcare = "are",
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
@@ -260,7 +268,7 @@ L:RegisterTranslations("frFR", function() return {
 BigWigsNefarian = BigWigs:NewModule(boss)
 BigWigsNefarian.zonename = AceLibrary("Babble-Zone-2.0")("Blackwing Lair")
 BigWigsNefarian.enabletrigger = { boss, victor }
-BigWigsNefarian.toggleoptions = {"shadowflame", "fear", "classcall", "otherwarn", "bosskill"}
+BigWigsNefarian.toggleoptions = {"shadowflame", "fear", "classcall", "otherwarn", "mc", "bosskill"}
 BigWigsNefarian.revision = tonumber(string.sub("$Revision: 13522 $", 12, -3))
 
 ------------------------------
@@ -269,6 +277,7 @@ BigWigsNefarian.revision = tonumber(string.sub("$Revision: 13522 $", 12, -3))
 
 function BigWigsNefarian:OnEnable()
     self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+    self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
 
@@ -301,7 +310,13 @@ end
 ------------------------------
 
 function BigWigsNefarian:CHAT_MSG_MONSTER_YELL(msg)
-	for i,v in pairs(warnpairs) do
+	if string.find(msg, L["landing_soon_trigger"]) then
+        self:TriggerEvent("BigWigs_StartBar", self, L["landing_bar"], 15, "Interface\\Icons\\Ability_Warrior_InnerRage")
+        self:TriggerEvent("BigWigs_StartBar", self, L["classcall_bar"], 42, "Interface\\Icons\\Spell_Shadow_Charm")
+        self:TriggerEvent("BigWigs_StartBar", self, L["fear_bar"], 43, "Interface\\Icons\\Spell_Shadow_PsychicScream")
+    end
+    
+    for i,v in pairs(warnpairs) do
 		if string.find(msg, i) then
 			if v[2] then
 				if self.db.profile.classcall then
@@ -323,12 +338,21 @@ function BigWigsNefarian:CHAT_MSG_MONSTER_YELL(msg)
 			return
 		end
 	end
-    
-    if string.find(msg, L["landing_soon_trigger"]) then
-        self:TriggerEvent("BigWigs_StartBar", self, L["landing_bar"], 15, "Interface\\Icons\\Ability_Warrior_InnerRage")
-        self:TriggerEvent("BigWigs_StartBar", self, L["classcall_bar"], 42, "Interface\\Icons\\Spell_Shadow_Charm")
-        self:TriggerEvent("BigWigs_StartBar", self, L["fear_bar"], 43, "Interface\\Icons\\Spell_Shadow_PsychicScream")
-    end
+
+end
+
+-- mind control
+function BigWigsNefarian:CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE(arg1)
+	local _,_, player, type = string.find(arg1, L["mcplayer"])
+	if player and type then
+		if player == L["mcyou"] and type == L["mcare"] then
+			player = UnitName("player")
+		end
+		if self.db.profile.mc then 
+            self:TriggerEvent("BigWigs_Message", player .. L["mcplayerwarn"], "Important") 
+            self:TriggerEvent("BigWigs_StartBar", self, player .. L["mcplayerwarn"], 15, "Interface\\Icons\\Spell_Shadow_Charm", "Orange")
+        end
+	end
 end
 
 function BigWigsNefarian:LandingEvent(msg)

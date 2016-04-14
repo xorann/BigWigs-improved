@@ -13,8 +13,8 @@ local prior2
 ----------------------------
 
 L:RegisterTranslations("enUS", function() return {
-	trigger1 = "afflicted by Lucifron",
-	trigger2 = "afflicted by Impending Doom",
+	trigger1 = "Lucifron's Curse",
+	trigger2 = "Impending Doom",
 
 	warn1 = "5 seconds until Lucifron's Curse!",
 	warn2 = "Lucifron's Curse - 20 seconds until next!",
@@ -122,12 +122,18 @@ BigWigsLucifron.revision = tonumber(string.sub("$Revision: 13476 $", 12, -3))
 ------------------------------
 
 function BigWigsLucifron:OnEnable()
+    started = nil
+    
+    self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
+    self:RegisterEvent("BigWigs_RecvSync")
 	self:RegisterEvent("BigWigs_Message")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
-    self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
+
+    self:RegisterEvent("BigWigs_RecvSync")
+    
 	prior1 = nil
 	prior2 = nil
 end
@@ -137,24 +143,34 @@ end
 ------------------------------
 
 function BigWigsLucifron:Event(msg)
-	if (not prior1 and string.find(msg, L["trigger1"]) and self.db.profile.curse) then
-		self:TriggerEvent("BigWigs_Message", L["warn2"], "Important")
-		self:ScheduleEvent("BigWigs_Message", 15, L["warn1"], "Urgent")
+	if (--[[not prior1 and]] string.find(msg, L["trigger1"]) and self.db.profile.curse) then
+		--self:TriggerEvent("BigWigs_Message", L["warn2"], "Important")
+		--self:ScheduleEvent("BigWigs_Message", 15, L["warn1"], "Urgent")
 		self:TriggerEvent("BigWigs_StartBar", self, L["bar1text"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
 		prior1 = true
-	elseif (not prior2 and string.find(msg, L["trigger2"]) and self.db.profile.doom) then
-		self:TriggerEvent("BigWigs_Message", L["warn4"], "Important")
-		self:ScheduleEvent("BigWigs_Message", 15, L["warn3"], "Urgent")
+	elseif (--[[not prior2 and]] string.find(msg, L["trigger2"]) and self.db.profile.doom) then
+		--self:TriggerEvent("BigWigs_Message", L["warn4"], "Important")
+		--self:ScheduleEvent("BigWigs_Message", 15, L["warn3"], "Urgent")
 		self:TriggerEvent("BigWigs_StartBar", self, L["bar2text"], 15, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
 		prior2 = true
     end
 end
 
-function BigWigsLucifron:PLAYER_REGEN_DISABLED()
+--[[function BigWigsLucifron:PLAYER_REGEN_DISABLED()
     DEFAULT_CHAT_FRAME:AddMessage("Fight started");
-end
+end]]
     
-function BigWigsLucifron:BigWigs_Message(msg)
+--[[function BigWigsLucifron:BigWigs_Message(msg)
 	if (msg == L["warn1"]) then prior1 = nil
 	elseif (msg == L["warn3"]) then prior2 = nil end
+end]]
+
+function BigWigsLucifron:BigWigs_RecvSync(sync, rest)
+	if sync == self:GetEngageSync() and rest and rest == boss and not started then
+		started = true
+		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
+		
+        self:TriggerEvent("BigWigs_StartBar", self, L["bar2text"], 10, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
+        self:TriggerEvent("BigWigs_StartBar", self, L["bar1text"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
+    end
 end

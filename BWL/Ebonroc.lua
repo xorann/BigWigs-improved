@@ -28,7 +28,7 @@ L:RegisterTranslations("enUS", function() return {
 	shadowflame_desc = "Warn for Shadow Flame",
     shadowflame_trigger = "Ebonroc begins to cast Shadow Flame.",
 	shadowflame_warning = "Shadow Flame incoming!",
-    shadowflame_bar = "Shadow Flame",
+    shadowflame_bar = "Possible Shadow Flame",
             
 
 	shadowcurse_trigger = "^([^%s]+) ([^%s]+) afflicted by Shadow of Ebonroc",
@@ -140,7 +140,8 @@ L:RegisterTranslations("deDE", function() return {
 
 	shadowflame_name = "Schattenflamme",
 	shadowflame_desc = "Warnung, wenn Schattenschwinge Schattenflamme wirkt.",
-
+    shadowflame_bar = "M\195\182gliche Schattenflamme",
+            
 	youcurse_name = "Schatten auf Dir",
 	youcurse_desc = "Warnung, wenn Du Schattenschwinges Schatten hast.",
 
@@ -220,7 +221,7 @@ function BigWigsEbonroc:BigWigs_RecvSync(sync, rest)
     
 	if sync == "EbonrocWingBuffet_" and self.db.profile.wingbuffet then
 		self:TriggerEvent("BigWigs_Message", L["wingbuffet_message"], "Important")
-		self:TriggerEvent("BigWigs_StartBar", self, L["wingbuffet_bar"], 29, "Interface\\Icons\\Spell_Fire_SelfDestruct")
+		self:TriggerEvent("BigWigs_StartBar", self, L["wingbuffet_bar"], 30, "Interface\\Icons\\Spell_Fire_SelfDestruct")
 	elseif sync == "EbonrocShadowflame" and self.db.profile.shadowflame then
 		self:TriggerEvent("BigWigs_Message", L["shadowflame_warning"], "Important", true, "Alarm")
         self:TriggerEvent("BigWigs_StartBar", self, L["shadowflame_bar"], 16, "Interface\\Icons\\Spell_Fire_Fire")

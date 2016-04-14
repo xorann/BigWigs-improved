@@ -49,7 +49,8 @@ L:RegisterTranslations("enUS", function() return {
 	breath3 = "Ignite Flesh",
 	breath4 = "Incinerate",
 	breath5 = "Frost Burn",
-    breathunknown_bar = "Breath",
+    breathunknown_bar1 = "First Breath",
+    breathunknown_bar2 = "Second Breath",
 
 	iconunknown = "Interface\\Icons\\INV_Misc_QuestionMark",
 	icon1 = "Interface\\Icons\\Spell_Arcane_PortalOrgrimmar",
@@ -95,6 +96,8 @@ L:RegisterTranslations("deDE", function() return {
 	breath3 = "Fleisch entz\195\188nden",
 	breath4 = "Verbrennen",
 	breath5 = "Frostbeulen",
+    breathunknown_bar1 = "Erster Atem",
+    breathunknown_bar2 = "Zweiter Atem",
 
 	castingbar = "Wirkt %s",
 } end )
@@ -258,13 +261,13 @@ function BigWigsChromaggus:BigWigs_RecvSync(sync, spellId)
 		started = true
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
 		
-        self:TriggerEvent("BigWigs_StartBar", self, L["breathunknown_bar"], 30, "Interface\\Icons\\Spell_Fire_SelfDestruct")
+        self:TriggerEvent("BigWigs_StartBar", self, L["breathunknown_bar1"], 30, "Interface\\Icons\\Spell_Fire_SelfDestruct")
         self:ScheduleEvent("countdown1_10", "BigWigs_Message", 20, "", "Urgent", true, "Ten")
         self:ScheduleEvent("countdown1_3", "BigWigs_Message", 27, "", "Urgent", true, "Three")
         self:ScheduleEvent("countdown1_2", "BigWigs_Message", 28, "", "Urgent", true, "Two")
         self:ScheduleEvent("countdown1_1", "BigWigs_Message", 29, "", "Urgent", true, "One")  
         
-        self:TriggerEvent("BigWigs_StartBar", self, L["breathunknown_bar"], 60, "Interface\\Icons\\Spell_Fire_SelfDestruct")
+        self:TriggerEvent("BigWigs_StartBar", self, L["breathunknown_bar2"], 60, "Interface\\Icons\\Spell_Fire_SelfDestruct")
         self:ScheduleEvent("countdown2_10", "BigWigs_Message", 50, "", "Urgent", true, "Ten")
         self:ScheduleEvent("countdown2_3", "BigWigs_Message", 57, "", "Urgent", true, "Three")
         self:ScheduleEvent("countdown2_2", "BigWigs_Message", 58, "", "Urgent", true, "Two")

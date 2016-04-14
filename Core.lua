@@ -1,4 +1,4 @@
-﻿
+
 ------------------------------
 --      Are you local?      --
 ------------------------------
@@ -313,6 +313,79 @@ function BigWigs.modulePrototype:CheckForWipe()
 	end
 end
 
+
+------------------------------
+--      KLHThreatMeter      --
+------------------------------
+
+function BigWigs:KTM_Reset()
+	if IsAddOnLoaded("KLHThreatMeter") then
+        if IsRaidLeader() then
+            klhtm.net.clearraidthreat()
+        end
+    end
+end
+function BigWigs.modulePrototype:KTM_Reset()
+    BigWigs:KTM_Reset()
+end
+
+BigWigs.masterTarget = nil;
+BigWigs.forceReset = nil;
+function BigWigs.modulePrototype:KTM_SetTarget(targetName, forceReset)
+	if IsAddOnLoaded("KLHThreatMeter") then
+        if targetName and type(targetName) == "string" and (IsRaidLeader() or IsRaidOfficer()) then
+            if UnitName("target") == targetName then
+                klhtm.net.sendmessage("target " .. targetName)
+                if forceReset then
+                    self:KTM_Reset()
+                end
+            else
+                -- we need to delay the setting mastertarget, as KTM only allows it to work if the person
+                -- calling the mastertarget sync has the unit as target
+                BigWigs:RegisterEvent("PLAYER_TARGET_CHANGED")
+                BigWigs.masterTarget    = targetName
+                BigWigs.forceReset      = forceReset
+            end
+        end
+    end
+end
+
+function BigWigs:KTM_ClearTarget(forceReset)
+    if IsAddOnLoaded("KLHThreatMeter") and IsRaidLeader() then
+        klhtm.net.clearmastertarget()
+        if forceReset then
+            self:KTM_Reset()
+        end
+    end
+end
+function BigWigs.modulePrototype:KTM_ClearTarget(forceReset)
+	BigWigs:KTM_ClearTarget(forceReset)
+end
+
+function BigWigs:PLAYER_TARGET_CHANGED()
+    if IsAddOnLoaded("KLHThreatMeter") and BigWigs.masterTarget and (IsRaidLeader() or IsRaidOfficer()) then
+        if klhtm.target.targetismaster(BigWigs.masterTarget) then
+            -- the masterTarget was already setup correctly
+            BigWigs:UnregisterEvent("PLAYER_TARGET_CHANGED")
+            BigWigs.masterTarget   	= nil
+            BigWigs.forceReset		= nil
+            return
+        end
+        
+        if UnitName("target") == BigWigs.masterTarget then
+       	    -- our new target is the wanted target, setup masterTarget now
+            klhtm.net.sendmessage("target " .. BigWigs.masterTarget)
+            if BigWigs.forceReset then
+                BigWigs:KTM_Reset()
+                BigWigs.forceReset = nil
+            end
+            BigWigs.masterTarget   = nil
+            BigWigs:UnregisterEvent("PLAYER_TARGET_CHANGED")
+        end
+    else
+        BigWigs:UnregisterEvent("PLAYER_TARGET_CHANGED")
+    end
+end
 
 ------------------------------
 --      Initialization      --

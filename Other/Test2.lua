@@ -76,6 +76,8 @@ function BigWigsBoar:BigWigs_RecvSync( sync, rest, nick )
 	--DEFAULT_CHAT_FRAME:AddMessage("sync: " .. sync)
     if sync == self:GetEngageSync() and rest and rest == boss and not started then
 		started = true
+        self:KTM_SetTarget(boss)
+        
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
 		if self.db.profile.engage then
         --if true then
@@ -101,6 +103,8 @@ function BigWigsBoar:BigWigs_RecvSync( sync, rest, nick )
         self:ScheduleEvent("teleCoundtdown1", "BigWigs_Message", 29, "", "Urgent", true, "One")
         self:ScheduleEvent("teleCoundtdown0", "BigWigs_Message", 30, L["teleport_msg"], "Urgent", true, "Alarm")
         self:ScheduleEvent("BigWigs_SendSync", 30, "TwinsTeleport")
+        
+        self:KTM_Reset()
     end
 end
 

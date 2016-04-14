@@ -25,7 +25,7 @@ L:RegisterTranslations("enUS", function() return {
 	shadowflame_desc = "Warn for Shadow Flame",
     shadowflame_trigger = "Firemaw begins to cast Shadow Flame.",
     shadowflame_warning = "Shadow Flame Incoming!",
-    shadowflame_bar = "Shadow Flame",
+    shadowflame_bar = "Possible Shadow Flame",
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
@@ -77,6 +77,7 @@ L:RegisterTranslations("deDE", function() return {
 
 	shadowflame_name = "Schattenflamme",
 	shadowflame_desc = "Warnung, wenn Feuerschwinge Schattenflamme wirkt.",
+    shadowflame_bar = "M\195\182gliche Schattenflamme",
 } end)
 
 L:RegisterTranslations("frFR", function() return {
@@ -140,11 +141,11 @@ function BigWigsFiremaw:BigWigs_RecvSync(sync, rest)
     
     if sync == "FiremawWingBuffet3" and self.db.profile.wingbuffet then
 		self:TriggerEvent("BigWigs_Message", L["wingbuffet_message"], "Important")
-		self:TriggerEvent("BigWigs_StartBar", self, L["wingbuffet_bar"], 32, "Interface\\Icons\\Spell_Fire_SelfDestruct")
+		self:TriggerEvent("BigWigs_StartBar", self, L["wingbuffet_bar"], 30, "Interface\\Icons\\Spell_Fire_SelfDestruct")
         
-        self:ScheduleEvent("countdown3", "BigWigs_Message", 29, "", "Urgent", true, "Three")
-        self:ScheduleEvent("countdown2", "BigWigs_Message", 30, "", "Urgent", true, "Two")
-        self:ScheduleEvent("countdown1", "BigWigs_Message", 31, "", "Urgent", true, "One") 
+        self:ScheduleEvent("countdown3", "BigWigs_Message", 27, "", "Urgent", true, "Three")
+        self:ScheduleEvent("countdown2", "BigWigs_Message", 28, "", "Urgent", true, "Two")
+        self:ScheduleEvent("countdown1", "BigWigs_Message", 29, "", "Urgent", true, "One") 
 	elseif sync == "FiremawShadowflame" and self.db.profile.shadowflame then
 		self:TriggerEvent("BigWigs_Message", L["shadowflame_warning"], "Important", true, "Alarm")
         self:TriggerEvent("BigWigs_StartBar", self, L["shadowflame_bar"], 16, "Interface\\Icons\\Spell_Fire_Fire")

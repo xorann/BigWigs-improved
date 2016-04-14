@@ -267,6 +267,7 @@ function BigWigsTwins:BigWigs_RecvSync(sync, rest, nick)
         self:ScheduleEvent("teleCoundtdown1", "BigWigs_Message", 29, "", "Urgent", true, "One")
         self:ScheduleEvent("teleCoundtdown0", "BigWigs_Message", 30, L["portwarn"], "Urgent", true, "Alarm")
         self:ScheduleEvent("BigWigs_SendSync", 30, "TwinsTeleport")
+        self:KTM_Reset()
 	end
 end
 

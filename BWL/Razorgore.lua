@@ -222,7 +222,7 @@ function BigWigsRazorgore:BigWigs_RecvSync(sync, rest)
 		end
 
 		if eggs == 30 and self.db.profile.phase then
-			self:TriggerEvent("BigWigs_Message", L["phase2_message"], "Important")
+			self:TriggerEvent("BigWigs_Message", L["phase2_message"], "Important", true, "Alarm")
 		end
 	end
 end

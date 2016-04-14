@@ -11,8 +11,10 @@ local L = AceLibrary("AceLocale-2.0"):new("BigWigs"..boss)
 
 L:RegisterTranslations("enUS", function() return {
 	-- Chat message triggers
-	trigger1 = "%s goes into a killing frenzy!",
-	trigger2 = "by Panic.",
+	--trigger1 = "%s goes into a killing frenzy!",
+    trigger1 = "Magmadar is afflicted by Frenzy.",
+	trigger2 = "afflicted by Panic",
+    trigger2b = "Magmadar 's Panic",
 
 	-- Warnings and bar texts
 	["Frenzy alert!"] = true,
@@ -30,6 +32,7 @@ L:RegisterTranslations("enUS", function() return {
 	frenzy_cmd = "frenzy",
 	frenzy_name = "Frenzy alert",
 	frenzy_desc = "Warn when Magmadar goes into a frenzy",
+    frenzy_bar = "Frenzy",
 } end)
 
 L:RegisterTranslations("koKR", function() return {
@@ -121,6 +124,8 @@ function BigWigsMagmadar:OnEnable()
     
 	self:RegisterEvent("BigWigs_Message")
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+    self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Frenzy")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Frenzy")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Fear")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Fear")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Fear")
@@ -135,10 +140,18 @@ end
 --      Event Handlers      --
 ------------------------------
 
-function BigWigsMagmadar:CHAT_MSG_MONSTER_EMOTE(msg)
+--[[function BigWigsMagmadar:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg == L["trigger1"] and self.db.profile.frenzy then
 		self:TriggerEvent("BigWigs_Message", L["Frenzy alert!"], "Important", nil, "Alert")
 	end
+end]]
+function BigWigsMagmadar:Frenzy(msg)
+	if self.db.profile.frenzy then
+        if msg == L["trigger1"] then
+            self:TriggerEvent("BigWigs_Message", L["Frenzy alert!"], "Important", nil, "Alert")
+            self:TriggerEvent("BigWigs_StartBar", self, L["frenzy_bar"], 15, "Interface\\Icons\\ability_druid_challangingroar")
+        end
+    end
 end
 
 function BigWigsMagmadar:BigWigs_RecvSync(sync, rest) 
@@ -147,8 +160,10 @@ function BigWigsMagmadar:BigWigs_RecvSync(sync, rest)
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
 
         --self:TriggerEvent("BigWigs_Message", L["engage_msg"], "Attention")
-        self:TriggerEvent("BigWigs_StartBar", self, L["AoE Fear"], 30, "Interface\\Icons\\Spell_Shadow_PsychicScream")
-		self:ScheduleEvent("BigWigs_Message", 25, L["5 seconds until AoE Fear!"], "Urgent")
+        self:TriggerEvent("BigWigs_StartBar", self, L["AoE Fear"], 20, "Interface\\Icons\\Spell_Shadow_PsychicScream")
+		self:ScheduleEvent("BigWigs_Message", 15, L["5 seconds until AoE Fear!"], "Urgent")
+        
+        self:TriggerEvent("BigWigs_StartBar", self, L["frenzy_bar"], 20, "Interface\\Icons\\ability_druid_challangingroar")
     end
     if sync ~= "MagmadarFear" then return end
 	if self.db.profile.fear then
@@ -165,6 +180,6 @@ function BigWigsMagmadar:Fear(msg)
 	end
 end
 
-function BigWigsMagmadar:BigWigs_Message(text)
+--[[function BigWigsMagmadar:BigWigs_Message(text)
 	if text == L["5 seconds until AoE Fear!"] then self.prior = nil end
-end
+end]]

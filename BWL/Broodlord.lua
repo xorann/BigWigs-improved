@@ -35,7 +35,8 @@ L:RegisterTranslations("enUS", function() return {
     blast_cmd = "blast",
     blast_name = "Blast Wave Alert",
     blast_desc = "Warn for Blast Wave",
-    blast_trigger = "Blast Wave hits",
+    --blast_trigger = "Blast Wave hits",
+    blast_trigger = "^([^%s]+) ([^%s]+) afflicted by Blast Wave",
     blast_bar = "Blast Wave",
 } end )
 
