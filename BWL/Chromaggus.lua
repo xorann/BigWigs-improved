@@ -31,8 +31,8 @@ L:RegisterTranslations("enUS", function() return {
 
 	breath_trigger = "^Chromaggus begins to cast ([%w ]+)\.",
 	vulnerability_test = "^[%w']+ [%w' ]+ ([%w]+) Chromaggus for ([%d]+) ([%w ]+) damage%..*",
-	frenzy_trigger = "%s goes into a killing frenzy!",
-	vulnerability_trigger = "%s flinches as its skin shimmers.",
+	frenzy_trigger = "goes into a killing frenzy!",
+	vulnerability_trigger = "flinches as its skin shimmers.",
 
 	hit = "hits",
 	crit = "crits",
@@ -290,9 +290,9 @@ function BigWigsChromaggus:BigWigs_RecvSync(sync, spellId)
 end
 
 function BigWigsChromaggus:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg == L["frenzy_trigger"] and self.db.profile.frenzy then
+	if string.find(msg, L["frenzy_trigger"]) and self.db.profile.frenzy then
 		self:TriggerEvent("BigWigs_Message", L["frenzy_message"], "Important")
-	elseif msg == L["vulnerability_trigger"] then
+	elseif string.find(msg, L["vulnerability_trigger"]) then
 		if self.db.profile.vulnerability then
 			self:TriggerEvent("BigWigs_Message", L["vulnerability_warning"], "Positive")
 		end

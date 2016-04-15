@@ -12,7 +12,7 @@ local L = AceLibrary("AceLocale-2.0"):new("BigWigs"..boss)
 L:RegisterTranslations("enUS", function() return {
 	wingbuffet_trigger = "Flamegor begins to cast Wing Buffet",
 	shadowflame_trigger = "Flamegor begins to cast Shadow Flame.",
-	frenzy_trigger = "%s goes into a frenzy!",
+	frenzy_trigger = "goes into a frenzy!",
 
 	wingbuffet_message = "Wing Buffet! 30sec to next!",
 	wingbuffet_warning = "3sec to Wing Buffet!",
@@ -176,7 +176,7 @@ function BigWigsFlamegor:BigWigs_RecvSync(sync, rest)
 end
 
 function BigWigsFlamegor:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg == L["frenzy_trigger"] and self.db.profile.frenzy then
+	if string.find(msg, L["frenzy_trigger"]) and self.db.profile.frenzy then
 		self:TriggerEvent("BigWigs_Message", L["frenzy_message"], "Important")
 	end
 end

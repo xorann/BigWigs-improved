@@ -34,7 +34,7 @@ wing buffet timer working
 
 Flamegor
 
-engage not working
+engage not working (module activated before pull?)
 frenzy warning not working
 shadow flame warning working
 shadow flame timer working
@@ -52,8 +52,7 @@ vulnerabilty warning not working
 
 Nefarian
 
-mind control timer missing
-add counter missing
+adds counter missing
 shadow flame warning working
 p2 warning working (first fear a bit early, but might be overlapped by shadowflame and class call)
 fear timer working
