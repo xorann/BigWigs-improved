@@ -13,16 +13,19 @@ local prior2
 ----------------------------
 
 L:RegisterTranslations("enUS", function() return {
-	trigger1 = "Lucifron's Curse",
-	trigger2 = "Impending Doom",
+	curse_trigger1 = "is afflicted by Lucifron's Curse",
+	curse_trigger2 = "Lucifron 's Lucifron's Curse was resisted by",
+	
+	doom_trigger1 = "is afflicted by Impending Doom",
+	doom_trigger2 = "Lucifron 's Impending Doom was resisted by",
 
-	warn1 = "5 seconds until Lucifron's Curse!",
-	warn2 = "Lucifron's Curse - 20 seconds until next!",
-	warn3 = "5 seconds until Impending Doom!",
-	warn4 = "Impending Doom - 20 seconds until next!",
+	curse_warn1 = "5 seconds until Lucifron's Curse!",
+	curse_warn2 = "Lucifron's Curse - 20 seconds until next!",
+	doom_warn1 = "5 seconds until Impending Doom!",
+	doom_warn2 = "Impending Doom - 20 seconds until next!",
 
-	bar1text = "Lucifron's Curse",
-	bar2text = "Impending Doom",
+	curse_bar = "Lucifron's Curse",
+	doom_bar = "Impending Doom",
 
 	cmd = "Lucifron",
 	
@@ -30,7 +33,7 @@ L:RegisterTranslations("enUS", function() return {
 	curse_name = "Lucifron's Curse alert",
 	curse_desc = "Warn for Lucifron's Curse",
 	
-	doom_cmd = "dmg",
+	doom_cmd = "doom",
 	doom_name = "Impending Doom alert",
 	doom_desc = "Warn for Impending Doom",
 } end)
@@ -126,16 +129,12 @@ function BigWigsLucifron:OnEnable()
     
     self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
     self:RegisterEvent("BigWigs_RecvSync")
-	self:RegisterEvent("BigWigs_Message")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
 
     self:RegisterEvent("BigWigs_RecvSync")
-    
-	prior1 = nil
-	prior2 = nil
 end
 
 ------------------------------
@@ -143,34 +142,23 @@ end
 ------------------------------
 
 function BigWigsLucifron:Event(msg)
-	if (--[[not prior1 and]] string.find(msg, L["trigger1"]) and self.db.profile.curse) then
-		--self:TriggerEvent("BigWigs_Message", L["warn2"], "Important")
-		--self:ScheduleEvent("BigWigs_Message", 15, L["warn1"], "Urgent")
-		self:TriggerEvent("BigWigs_StartBar", self, L["bar1text"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
-		prior1 = true
-	elseif (--[[not prior2 and]] string.find(msg, L["trigger2"]) and self.db.profile.doom) then
-		--self:TriggerEvent("BigWigs_Message", L["warn4"], "Important")
-		--self:ScheduleEvent("BigWigs_Message", 15, L["warn3"], "Urgent")
-		self:TriggerEvent("BigWigs_StartBar", self, L["bar2text"], 15, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
-		prior2 = true
-    end
+	if (self.db.profile.curse) then
+		if (string.find(msg, L["curse_trigger1"]) or string.find(msg, L["curse_trigger2"])) then
+			self:TriggerEvent("BigWigs_StartBar", self, L["curse_bar"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
+		end
+	elseif (self.db.profile.doom) then
+		if (string.find(msg, L["doom_trigger1"]) or string.find(msg, L["doom_trigger2"])) then
+			self:TriggerEvent("BigWigs_StartBar", self, L["doom_bar"], 15, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
+		end
+    	end
 end
-
---[[function BigWigsLucifron:PLAYER_REGEN_DISABLED()
-    DEFAULT_CHAT_FRAME:AddMessage("Fight started");
-end]]
-    
---[[function BigWigsLucifron:BigWigs_Message(msg)
-	if (msg == L["warn1"]) then prior1 = nil
-	elseif (msg == L["warn3"]) then prior2 = nil end
-end]]
 
 function BigWigsLucifron:BigWigs_RecvSync(sync, rest)
 	if sync == self:GetEngageSync() and rest and rest == boss and not started then
 		started = true
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
 		
-        self:TriggerEvent("BigWigs_StartBar", self, L["bar2text"], 10, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
-        self:TriggerEvent("BigWigs_StartBar", self, L["bar1text"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
+        self:TriggerEvent("BigWigs_StartBar", self, L["doom_bar"], 10, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
+        self:TriggerEvent("BigWigs_StartBar", self, L["curse_bar"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
     end
 end
