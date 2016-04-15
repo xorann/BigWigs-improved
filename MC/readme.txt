@@ -8,8 +8,8 @@ doom tracking only working half of the time
 Magmadar
 
 engage working
-first fear timer not accurate
-frenzy timer missing
+first fear timer to be tested
+frenzy timer to be tested
 
 
 Gehennas
@@ -25,16 +25,16 @@ Garr
 Geddon
 
 Living Bomb Timer working
-first inferno countdown timer working, all timer afterwards missing
-inferno timer missing
-magic debuff timer missing
+first inferno countdown timer working, 
+inferno timer to be tested
+ignite mana timer to be tested
 
 
 Shazzrah
 
-Teleport Timer missing
-counterspell timer missing
-deaden magic warning missing
+Teleport Timer to be tested (check time)
+counterspell timer to be tested
+deaden magic warning to be tested
 
 
 Golemagg
@@ -49,8 +49,9 @@ Sulfuron
 
 Majordomus
 
-first timer missing
-timers working, new powers could be specified
+first timer to be tested
+timers working
+new powers texts to be tested
 
 
 Ragnaros

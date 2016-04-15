@@ -31,6 +31,8 @@ L:RegisterTranslations("enUS", function() return {
 	bar1text = "Magic Reflection",
 	bar2text = "Damage Shield",
 	bar3text = "New powers",
+	magic_soon_bar = "Next Magic Reflection",
+	dmg_soon_bar = "Next Damage Reflection",
 
 	cmd = "Majordomo",
 	
@@ -156,10 +158,15 @@ BigWigsMajordomo.revision = tonumber(string.sub("$Revision: 13476 $", 12, -3))
 ------------------------------
 
 function BigWigsMajordomo:OnEnable()
+	started = nil
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER")
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	aura = nil
+	
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
+	self:RegisterEvent("BigWigs_RecvSync")
 end
 
 function BigWigsMajordomo:VerifyEnable(unit)
@@ -189,10 +196,20 @@ function BigWigsMajordomo:CHAT_MSG_SPELL_AURA_GONE_OTHER(msg)
 	end
 end
 
+function BigWigsMagmadar:BigWigs_RecvSync(sync, rest) 
+	if sync == self:GetEngageSync() and rest and rest == boss and not started then
+		started = true
+		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
+		
+		-- 15s to first damage shield
+		self:TriggerEvent("BigWigs_StartBar", self, L["bar2text"], 15, Texture2)
+    	end
+end
+
 function BigWigsMajordomo:NewPowers(power)
 	aura = power
 	self:TriggerEvent("BigWigs_Message", power == 1 and L["warn1"] or L["warn2"], "Important")
-	self:TriggerEvent("BigWigs_StartBar", self, L["bar3text"], 15, "Interface\\Icons\\Spell_Frost_Wisp")
+	self:TriggerEvent("BigWigs_StartBar", self, power == 1 and L["magic_soon_bar"] or L["dmg_soon_bar"], 15, "Interface\\Icons\\Spell_Frost_Wisp")
 	self:TriggerEvent("BigWigs_StartBar", self, power == 1 and L["bar1text"] or L["bar2text"], 10, power == 1 and Texture1 or Texture2)
-	self:ScheduleEvent("BigWigs_Message", 10, L["warn3"], "Urgent")
+	--self:ScheduleEvent("BigWigs_Message", 10, L["warn3"], "Urgent")
 end
