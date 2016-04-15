@@ -157,7 +157,7 @@ end
 ------------------------------
 
 function BigWigsOnyxia:CHAT_MSG_MONSTER_EMOTE(msg)
-	if (msg == L["deepbreath_trigger"]) then
+	if (string.find(msg, L["deepbreath_trigger"]) then
 		if self.db.profile.deepbreath then 
             self:TriggerEvent("BigWigs_Message", L["deepbreath_warn"], "Important", true, "RunAway") 
         end
