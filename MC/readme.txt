@@ -32,8 +32,8 @@ ignite mana timer to be tested
 
 Shazzrah
 
-Teleport Timer missing
-counterspell timer missing
+Teleport Timer to be tested (check time)
+counterspell timer to be tested
 deaden magic warning missing
 
 
