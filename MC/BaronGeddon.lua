@@ -14,6 +14,8 @@ L:RegisterTranslations("enUS", function() return {
 	inferno_trigger = "Baron Geddon is afflicted by Inferno",
 	inferno_over_trigger = "Inferno fades from Baron Geddon.",
 	service_trigger = "%s performs one last service for Ragnaros.",
+	ignite_mana_trigger = "is afflicted by Ignite Mana",
+	ignite_mana_trigger2 = "Ignite Mana was resisted by",
 
 	you = "You",
 	are = "are",
@@ -53,6 +55,11 @@ L:RegisterTranslations("enUS", function() return {
 	icon_cmd = "icon",
 	icon_name = "Raid Icon on bomb",
 	icon_desc = "Put a Raid Icon on the person who's the bomb. (Requires promoted or higher)",
+	
+	ignite_mana_cmd = "ignite_mana",
+	ignite_mana_name = "Bar for Ignite Mana",
+	ignite_mana_desc = "Shows a 20 second bar before every Ignite Mana.",
+	ignite_mana_bar = "Ignite Mana",
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
@@ -172,7 +179,7 @@ L:RegisterTranslations("frFR", function() return {
 BigWigsBaronGeddon = BigWigs:NewModule(boss)
 BigWigsBaronGeddon.zonename = AceLibrary("Babble-Zone-2.0")("Molten Core")
 BigWigsBaronGeddon.enabletrigger = boss
-BigWigsBaronGeddon.toggleoptions = {"inferno", "service", -1, "bombtimer", "youbomb", "elsebomb", "icon", "bosskill"}
+BigWigsBaronGeddon.toggleoptions = {"inferno", "service", -1, "bombtimer", "youbomb", "elsebomb", "ignite_mana", "icon", "bosskill"}
 BigWigsBaronGeddon.revision = tonumber(string.sub("$Revision: 13698 $", 12, -3))
 
 ------------------------------
@@ -214,6 +221,9 @@ function BigWigsBaronGeddon:Event(msg)
     elseif string.find(msg, L["inferno_over_trigger"]) then
     	self:TriggerEvent("BigWigs_SendSync", "GeddonInfernoOver")
     end
+    if string.find(msg, L["ignite_mana_trigger"] or string.find(msg, L["ignite_mana_trigger2"] then
+    	self:TriggerEvent("BigWigs_SendSync", "GeddonIgniteMana")
+    end
 end
 
 --[[function BigWigsBaronGeddon:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
@@ -234,7 +244,8 @@ function BigWigsBaronGeddon:BigWigs_RecvSync(sync, rest, nick)
 		started = true
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
         
-        self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 30, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")     
+        self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 30, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")
+        self:TriggerEvent("BigWigs_StartBar", self, L["ignite_mana_bar"], 20, "Interface\\Icons\\Spell_Fire_Incinerate", "Orange")
     end
     
     if sync == "GeddonBomb" and rest then
@@ -260,6 +271,8 @@ function BigWigsBaronGeddon:BigWigs_RecvSync(sync, rest, nick)
 		self:TriggerEvent("BigWigs_Message", L["inferno_message"], "Important")
 	elseif sync == "GeddonInfernoOver" and self.db.profile.inferno then
 		self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 22, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")
+	elseif sync == "GeddonIgniteMana" and self.db.profile.ignite_mana then
+		self:TriggerEvent("BigWigs_StartBar", self, L["ignite_mana_bar"], 20, "Interface\\Icons\\Spell_Fire_Incinerate", "Orange")
 	end
 end
 
