@@ -26,7 +26,7 @@ Geddon
 
 Living Bomb Timer working
 first inferno countdown timer working, all timer afterwards missing
-inferno timer missing
+inferno timer to be tested
 magic debuff timer missing
 
 
