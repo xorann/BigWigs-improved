@@ -28,6 +28,11 @@ L:RegisterTranslations("enUS", function() return {
 	blink_cmd = "blink",
 	blink_name = "Blink Alert",
 	blink_desc = "Warn when Shazzrah Blinks",
+	
+	counterspell_cmd = "counterspell",
+	counterspell_name = "Counterspell",
+	counterspell_desc = "Bar for Counterspell",
+	counterspell_bar = "Counterspell",
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
@@ -100,7 +105,7 @@ L:RegisterTranslations("frFR", function() return {
 BigWigsShazzrah = BigWigs:NewModule(boss)
 BigWigsShazzrah.zonename = AceLibrary("Babble-Zone-2.0")("Molten Core")
 BigWigsShazzrah.enabletrigger = boss
-BigWigsShazzrah.toggleoptions = {"selfbuff", "blink", "bosskill"}
+BigWigsShazzrah.toggleoptions = {"selfbuff", "blink", "counterspell", "bosskill"}
 BigWigsShazzrah.revision = tonumber(string.sub("$Revision: 13476 $", 12, -3))
 
 ------------------------------
@@ -108,6 +113,9 @@ BigWigsShazzrah.revision = tonumber(string.sub("$Revision: 13476 $", 12, -3))
 ------------------------------
 
 function BigWigsShazzrah:OnEnable()
+	started = nil
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
+    
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
@@ -133,11 +141,34 @@ function BigWigsShazzrah:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
 end
 
 function BigWigsShazzrah:BigWigs_RecvSync(sync)
+	if sync == self:GetEngageSync() and rest and rest == boss and not started then
+		started = true
+		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
+		
+		self:TriggerEvent("BigWigs_StartBar", self, L["bar1text"], 45, "Interface\\Icons\\Spell_Arcane_Blink")
+		
+		-- teleport trigger missing in combatlog
+		self:ScheduleEvent("BigWigs_SendSync", 40, "ShazzrahBlink")
+        	self:KTM_Reset()
+        	
+        	-- successful counterspell not visible in combatlog
+        	self:TriggerEvent("BigWigs_StartBar", self, L["counterspell_bar"], 10, "Interface\\Icons\\Spell_Frost_IceShock")
+        	self:ScheduleEvent("BigWigs_SendSync", 10, "ShazzrahCounterspell")
+        end
+	
 	if (sync == "ShazzrahBlink" and self.db.profile.blink) then
 		self:TriggerEvent("BigWigs_Message", L["warn1"], "Important")
-		self:ScheduleEvent("BigWigs_Message", 40, L["warn2"], "Urgent")
+		--self:ScheduleEvent("BigWigs_Message", 40, L["warn2"], "Urgent")
 		self:TriggerEvent("BigWigs_StartBar", self, L["bar1text"], 45, "Interface\\Icons\\Spell_Arcane_Blink")
+		
+		-- blink trigger missing in combatlog
+		self:ScheduleEvent("BigWigs_SendSync", 40, "ShazzrahBlink")
+        	self:KTM_Reset()
 	elseif (sync == "ShazzrahDeadenMagic" and self.db.profile.selfbuff) then
 		self:TriggerEvent("BigWigs_Message", L["warn3"], "Important")
+	elseif (sync == "ShazzrahCounterspell" and self.db.profile.counterspell) then
+		-- successful counterspell not visible in combatlog
+        	self:TriggerEvent("BigWigs_StartBar", self, L["counterspell_bar"], 15, "Interface\\Icons\\Spell_Frost_IceShock")
+        	self:ScheduleEvent("BigWigs_SendSync", 15, "ShazzrahCounterspell")
 	end
 end
