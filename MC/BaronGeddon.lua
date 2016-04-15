@@ -12,6 +12,7 @@ local L = AceLibrary("AceLocale-2.0"):new("BigWigs"..boss)
 L:RegisterTranslations("enUS", function() return {
 	bomb_trigger = "^([^%s]+) ([^%s]+) afflicted by Living Bomb",
 	inferno_trigger = "Baron Geddon is afflicted by Inferno",
+	inferno_over_trigger = "Inferno fades from Baron Geddon.",
 	service_trigger = "%s performs one last service for Ragnaros.",
 
 	you = "You",
@@ -210,6 +211,9 @@ function BigWigsBaronGeddon:Event(msg)
     if string.find(msg, L["inferno_trigger"]) then 
         self:TriggerEvent("BigWigs_SendSync", "GeddonInferno")
     end
+    elseif string.find(msg, L["inferno_over_trigger"]) then
+    	self:TriggerEvent("BigWigs_SendSync", "GeddonInfernoOver")
+    end
 end
 
 --[[function BigWigsBaronGeddon:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
@@ -252,8 +256,10 @@ function BigWigsBaronGeddon:BigWigs_RecvSync(sync, rest, nick)
 			self:TriggerEvent("BigWigs_SetRaidIcon", player)
 		end
 	elseif sync == "GeddonInferno" and self.db.profile.inferno then
-		self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 10, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")
+		self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 8, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")
 		self:TriggerEvent("BigWigs_Message", L["inferno_message"], "Important")
+	elseif sync == "GeddonInfernoOver" and self.db.profile.inferno then
+		self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 22, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")
 	end
 end
 
