@@ -170,9 +170,10 @@ function BigWigsOnyxia:CHAT_MSG_MONSTER_YELL(msg)
             self:TriggerEvent("BigWigs_Message", L["phase2_warn"], "Urgent", true, "Alarm")
         end
     elseif (string.find(msg, L["phase3_trigger"])) then
-        if self.db.profile.phase2 then 
+        if self.db.profile.phase3 then 
             self:TriggerEvent("BigWigs_Message", L["phase3_warn"], "Urgent", true, "Beware")
             self:TriggerEvent("BigWigs_StartBar", self, L["onyfear_bar"], 10, "Interface\\Icons\\Spell_Shadow_PsychicScream")
+            self:KTM_Reset()
         end
     end
 end
