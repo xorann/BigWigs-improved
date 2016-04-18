@@ -122,8 +122,8 @@ function BigWigsMagmadar:OnEnable()
 	self.prior = nil
     started = nil
     
-	self:RegisterEvent("BigWigs_Message")
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+	--self:RegisterEvent("BigWigs_Message")
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Frenzy")
     self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Frenzy")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Frenzy")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Fear")

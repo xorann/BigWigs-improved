@@ -193,6 +193,10 @@ function BigWigsBaronGeddon:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
+    
+    self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Inferno")
+    self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Inferno")
+    
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
     self:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage")
@@ -215,14 +219,21 @@ function BigWigsBaronGeddon:Event(msg)
 		self:TriggerEvent("BigWigs_SendSync", "GeddonBomb "..EPlayer)
 	end
     
-    if string.find(msg, L["inferno_trigger"]) then 
+    --[[if string.find(msg, L["inferno_trigger"]) then 
         self:TriggerEvent("BigWigs_SendSync", "GeddonInferno")
-    end
     elseif string.find(msg, L["inferno_over_trigger"]) then
     	self:TriggerEvent("BigWigs_SendSync", "GeddonInfernoOver")
-    end
-    if string.find(msg, L["ignite_mana_trigger"] or string.find(msg, L["ignite_mana_trigger2"] then
+    end]]
+    if string.find(msg, L["ignite_mana_trigger"]) or string.find(msg, L["ignite_mana_trigger2"]) then
     	self:TriggerEvent("BigWigs_SendSync", "GeddonIgniteMana")
+    end
+end
+
+function BigWigsBaronGeddon:Inferno(msg)
+    if string.find(msg, L["inferno_trigger"]) then 
+        self:TriggerEvent("BigWigs_SendSync", "GeddonInferno")
+    elseif string.find(msg, L["inferno_over_trigger"]) then
+    	self:TriggerEvent("BigWigs_SendSync", "GeddonInfernoOver")
     end
 end
 
@@ -245,7 +256,9 @@ function BigWigsBaronGeddon:BigWigs_RecvSync(sync, rest, nick)
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
         
         self:TriggerEvent("BigWigs_StartBar", self, L["inferno_bar"], 30, "Interface\\Icons\\Spell_Fire_SealOfFire", "Orange")
+        self:ScheduleEvent("BigWigs_SendSync", 30, "Inferno")
         self:TriggerEvent("BigWigs_StartBar", self, L["ignite_mana_bar"], 20, "Interface\\Icons\\Spell_Fire_Incinerate", "Orange")
+        self:ScheduleEvent("BigWigs_SendSync", 30, "TwinsTeleport")
     end
     
     if sync == "GeddonBomb" and rest then

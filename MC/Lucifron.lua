@@ -146,11 +146,13 @@ function BigWigsLucifron:Event(msg)
 		if (string.find(msg, L["curse_trigger1"]) or string.find(msg, L["curse_trigger2"])) then
 			self:TriggerEvent("BigWigs_StartBar", self, L["curse_bar"], 20, "Interface\\Icons\\Spell_Shadow_BlackPlague")
 		end
-	elseif (self.db.profile.doom) then
+    end
+    
+	if (self.db.profile.doom) then
 		if (string.find(msg, L["doom_trigger1"]) or string.find(msg, L["doom_trigger2"])) then
 			self:TriggerEvent("BigWigs_StartBar", self, L["doom_bar"], 15, "Interface\\Icons\\Spell_Shadow_NightOfTheDead")
 		end
-    	end
+    end
 end
 
 function BigWigsLucifron:BigWigs_RecvSync(sync, rest)

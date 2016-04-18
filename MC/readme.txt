@@ -1,8 +1,8 @@
 Lucifron
 
 engage missing
-curse tracking ok, could be improved
-doom tracking only working half of the time
+curse tracking working
+doom tracking to be tested
 
 
 Magmadar
@@ -27,7 +27,7 @@ Geddon
 Living Bomb Timer working
 first inferno countdown timer working, 
 inferno timer to be tested
-ignite mana timer to be tested
+ignite mana timer working (2nd debuff after 23s?)
 
 
 Shazzrah
@@ -49,9 +49,7 @@ Sulfuron
 
 Majordomus
 
-first timer to be tested
 timers working
-new powers texts to be tested
 
 
 Ragnaros

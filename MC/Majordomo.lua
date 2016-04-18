@@ -196,7 +196,7 @@ function BigWigsMajordomo:CHAT_MSG_SPELL_AURA_GONE_OTHER(msg)
 	end
 end
 
-function BigWigsMagmadar:BigWigs_RecvSync(sync, rest) 
+function BigWigsMajordomo:BigWigs_RecvSync(sync, rest) 
 	if sync == self:GetEngageSync() and rest and rest == boss and not started then
 		started = true
 		if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then self:UnregisterEvent("PLAYER_REGEN_DISABLED") end
