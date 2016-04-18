@@ -25,7 +25,7 @@ L:RegisterTranslations("enUS", function() return {
     pull_trigger7 = "Look brother, fresh blood.",
     pull_trigger8 = "Like a fly in a web.",
     pull_trigger9 = "Shall be your undoing!",
-    pull_trigger10 = "Your brash arrogance...",
+    pull_trigger10 = "Your brash arrogance",
             
 	bug_cmd = "bug",
 	bug_name = "Exploding Bug Alert",
