@@ -146,7 +146,7 @@ BigWigsOnyxia.revision = tonumber(string.sub("$Revision: 13476 $", 12, -3))
 ------------------------------
 
 function BigWigsOnyxia:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "GenericBossDeath")
@@ -156,7 +156,7 @@ end
 --      Event Handlers      --
 ------------------------------
 
-function BigWigsOnyxia:CHAT_MSG_MONSTER_EMOTE(msg)
+function BigWigsOnyxia:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if (string.find(msg, L["deepbreath_trigger"]) then
 		if self.db.profile.deepbreath then 
             self:TriggerEvent("BigWigs_Message", L["deepbreath_warn"], "Important", true, "RunAway") 
