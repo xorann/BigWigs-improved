@@ -147,7 +147,7 @@ end
 end]]
 function BigWigsMagmadar:Frenzy(msg)
 	if self.db.profile.frenzy then
-        if msg == L["trigger1"] then
+        if string.find(msg, L["trigger1"]) then
             self:TriggerEvent("BigWigs_Message", L["Frenzy alert!"], "Important", nil, "Alert")
             self:TriggerEvent("BigWigs_StartBar", self, L["frenzy_bar"], 15, "Interface\\Icons\\ability_druid_challangingroar")
         end

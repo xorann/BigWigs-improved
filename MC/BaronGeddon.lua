@@ -57,9 +57,9 @@ L:RegisterTranslations("enUS", function() return {
 	icon_desc = "Put a Raid Icon on the person who's the bomb. (Requires promoted or higher)",
 	
 	ignite_mana_cmd = "ignite_mana",
-	ignite_mana_name = "Bar for Ignite Mana",
-	ignite_mana_desc = "Shows a 20 second bar before every Ignite Mana.",
-	ignite_mana_bar = "Ignite Mana",
+	ignite_mana_name = "Bar for Ignite Mana (not accurate)",
+	ignite_mana_desc = "Shows a bar before every Ignite Mana. (not accurate)",
+	ignite_mana_bar = "Possible Ignite Mana",
 } end)
 
 L:RegisterTranslations("zhCN", function() return {
